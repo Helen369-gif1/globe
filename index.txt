@@ -21,6 +21,7 @@
 <body>
 <script src="https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/three-geojson-geometry@1.2.0/dist/three-geojson-geometry.min.js"></script>
 
 <script>
 /* === НАСТРОЙКИ === */
@@ -55,41 +56,21 @@ const grid = new THREE.LineSegments(new THREE.WireframeGeometry(gridGeometry), g
 scene.add(grid);
 
 /* === КОНТУРЫ МАТЕРИКОВ === */
-let continents = new THREE.Group(); // группа для материков
-scene.add(continents);
-
+let continents; // глобальная переменная для вращения вместе с grid
 fetch("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json")
   .then(res => res.json())
   .then(world => {
     const geoJson = topojson.feature(world, world.objects.countries);
-
-    geoJson.features.forEach(feature => {
-      const coordinates = feature.geometry.coordinates;
-
-      coordinates.forEach(polygon => {
-        // в случае MultiPolygon
-        let polys = feature.geometry.type === "MultiPolygon" ? polygon : [polygon];
-
-        polys.forEach(ring => {
-          const points = [];
-          ring[0].forEach(coord => {
-            const lon = coord[0] * Math.PI / 180;
-            const lat = coord[1] * Math.PI / 180;
-            const x = (RADIUS + 0.01) * Math.cos(lat) * Math.cos(lon);
-            const y = (RADIUS + 0.01) * Math.sin(lat);
-            const z = (RADIUS + 0.01) * Math.cos(lat) * Math.sin(lon);
-            points.push(new THREE.Vector3(x, y, z));
-          });
-          const geometry = new THREE.BufferGeometry().setFromPoints(points);
-          const line = new THREE.Line(geometry, new THREE.LineBasicMaterial({
-            color: 0xffffff,
-            opacity: 0.8,
-            transparent: true
-          }));
-          continents.add(line);
-        });
-      });
+    const geom = new THREE.GeoJsonGeometry(geoJson, RADIUS + 0.01);
+    const material = new THREE.LineBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.8,
+      linewidth: 1.2
     });
+    continents = new THREE.LineSegments(geom, material);
+    continents.rotation.y = Math.PI; // выравнивание
+    scene.add(continents); // добавляем в сцену
   });
 
 /* === ЧАСТИЦЫ === */
@@ -111,14 +92,14 @@ for (let i = 0; i < PARTICLE_COUNT; i++) {
 
 const geometry = new THREE.BufferGeometry();
 geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-const particleMaterial = new THREE.PointsMaterial({
+const material = new THREE.PointsMaterial({
   color: 0x00ffff,
   size: 0.045,
   transparent: true,
   opacity: 0.9,
   blending: THREE.AdditiveBlending,
 });
-const points = new THREE.Points(geometry, particleMaterial);
+const points = new THREE.Points(geometry, material);
 scene.add(points);
 
 /* === МЫШЬ === */
@@ -144,7 +125,8 @@ function animate() {
 
   grid.rotation.y += 0.001;
   points.rotation.y += 0.0012;
-  continents.rotation.y = grid.rotation.y; // материки вращаются вместе с глобусом
+
+  if (continents) continents.rotation.y = grid.rotation.y; // материки вращаются вместе с глобусом
 
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     const idx = i * 3;
