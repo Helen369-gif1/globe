@@ -56,7 +56,6 @@ const grid = new THREE.LineSegments(new THREE.WireframeGeometry(gridGeometry), g
 scene.add(grid);
 
 /* === КОНТУРЫ МАТЕРИКОВ === */
-let continents; // глобальная переменная для вращения вместе с grid
 fetch("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json")
   .then(res => res.json())
   .then(world => {
@@ -68,9 +67,9 @@ fetch("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json")
       opacity: 0.8,
       linewidth: 1.2
     });
-    continents = new THREE.LineSegments(geom, material);
-    continents.rotation.y = Math.PI; // выравнивание
-    scene.add(continents); // добавляем в сцену
+    const continents = new THREE.LineSegments(geom, material);
+    continents.rotation.y = Math.PI;
+    grid.add(continents); // материки вращаются вместе с глобусом
   });
 
 /* === ЧАСТИЦЫ === */
@@ -125,8 +124,6 @@ function animate() {
 
   grid.rotation.y += 0.001;
   points.rotation.y += 0.0012;
-
-  if (continents) continents.rotation.y = grid.rotation.y; // материки вращаются вместе с глобусом
 
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     const idx = i * 3;
