@@ -22,7 +22,7 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js"></script>
 <script>
 /* === НАСТРОЙКИ === */
-const PARTICLE_COUNT = 2000; // оптимально для мгновенной реакции
+const PARTICLE_COUNT = 2000;
 const RADIUS = 5.0;
 const BASE_SPEED = 0.001;
 const RETURN_FORCE = 0.02;
@@ -46,9 +46,9 @@ const gridMat = new THREE.LineBasicMaterial({ color:0x00aaff, transparent:true, 
 const grid = new THREE.LineSegments(new THREE.WireframeGeometry(gridGeo), gridMat);
 scene.add(grid);
 
-/* === СФЕРА С МАТЕРИКАМИ === */
+/* === СФЕРА С ТВОЕЙ КАРТОЙ МАТЕРИКОВ === */
 const textureLoader = new THREE.TextureLoader();
-const earthTex = textureLoader.load('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_yellow_contour.png');
+const earthTex = textureLoader.load('map_contou.png'); // <-- твоя карта здесь
 
 const earthGeo = new THREE.SphereGeometry(RADIUS, 64, 32);
 const earthMat = new THREE.MeshBasicMaterial({ map: earthTex, transparent:false, opacity:1 });
@@ -153,4 +153,3 @@ window.addEventListener("resize",()=>{
 </script>
 </body>
 </html>
-
