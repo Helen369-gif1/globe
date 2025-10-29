@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+я э<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
@@ -28,7 +28,7 @@ const BASE_SPEED = 0.001;
 const RETURN_FORCE = 0.01;
 const MOUSE_FORCE = 0.05;
 const DAMPING = 0.9;
-const JITTER_STRENGTH = 0.005;
+const JITTER_STRENGTH = 0.0;
 
 /* === СЦЕНА === */
 const scene = new THREE.Scene();
@@ -79,7 +79,7 @@ for (let i = 0; i < PARTICLE_COUNT; i++) {
   const z = r * Math.cos(theta);
   positions.set([x, y, z], i * 3);
   basePositions.set([x, y, z], i * 3);
-  velocities.set([(Math.random() - 0.5) * BASE_SPEED, (Math.random() - 0.5) * BASE_SPEED, (Math.random() - 0.5) * BASE_SPEED], i * 3);
+  velocities.set([0,0,0], i * 3);   // вместо случайной скорости — сразу 0
 }
 
 const partGeo = new THREE.BufferGeometry();
