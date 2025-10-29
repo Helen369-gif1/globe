@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Глобус с материками и частицами</title>
+<title>Живой глобус с материками и частицами</title>
 <style>
   html, body {
     margin: 0;
@@ -28,7 +28,7 @@ const BASE_SPEED = 0.001;
 const RETURN_FORCE = 0.02;
 const MOUSE_FORCE = 0.05;
 const DAMPING = 0.85;
-const JITTER_STRENGTH = 0.002; // минимальный джиттер
+const JITTER_STRENGTH = 0.002;
 
 /* === СЦЕНА === */
 const scene = new THREE.Scene();
@@ -40,18 +40,18 @@ renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 document.body.appendChild(renderer.domElement);
 
-/* === СЕТКА ГЛОБУСА === */
+/* === СПЛОШНАЯ СЕТКА === */
 const gridGeo = new THREE.SphereGeometry(RADIUS, 64, 32);
 const gridMat = new THREE.LineBasicMaterial({ color:0x00aaff, transparent:true, opacity:0.2 });
 const grid = new THREE.LineSegments(new THREE.WireframeGeometry(gridGeo), gridMat);
 scene.add(grid);
 
-/* === СФЕРА С КОНТУРАМИ МАТЕРИКОВ === */
+/* === СФЕРА С МАТЕРИКАМИ === */
 const textureLoader = new THREE.TextureLoader();
 const earthTex = textureLoader.load('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_yellow_contour.png');
 
 const earthGeo = new THREE.SphereGeometry(RADIUS, 64, 32);
-const earthMat = new THREE.MeshBasicMaterial({ map:earthTex, transparent:true, opacity:0.85 });
+const earthMat = new THREE.MeshBasicMaterial({ map: earthTex, transparent:false, opacity:1 });
 const earth = new THREE.Mesh(earthGeo, earthMat);
 scene.add(earth);
 
@@ -153,3 +153,4 @@ window.addEventListener("resize",()=>{
 </script>
 </body>
 </html>
+
