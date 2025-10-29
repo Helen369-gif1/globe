@@ -22,13 +22,14 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js"></script>
 <script>
 /* === НАСТРОЙКИ === */
-const PARTICLE_COUNT = 2000;
+const PARTICLE_COUNT = 2000;   // уменьшено, чтобы быстрее реагировали
 const RADIUS = 5.0;
 const BASE_SPEED = 0.001;
 const RETURN_FORCE = 0.01;
-const MOUSE_FORCE = 0.05;
+const MOUSE_FORCE = 0.05;      // увеличена сила реакции на курсор
 const DAMPING = 0.9;
-const JITTER_STRENGTH = 0.0;
+const JITTER_STRENGTH = 0.0;   // убираем джиттер на старте, чтобы частицы сразу появились
+
 
 /* === СЦЕНА === */
 const scene = new THREE.Scene();
@@ -55,7 +56,7 @@ const sphereMesh = new THREE.Mesh(sphereGeo, sphereMat);
 scene.add(sphereMesh);
 
 /* === СЕТКА (wireframe) поверх сферы === */
-const gridGeometry = new THREE.SphereGeometry(RADIUS + 0.001, 72, 36);
+const gridGeometry = new THREE.SphereGeometry(RADIUS, 48, 24);
 const gridMaterial = new THREE.LineBasicMaterial({
   color: 0x00aaff,
   transparent: true,
@@ -79,7 +80,7 @@ for (let i = 0; i < PARTICLE_COUNT; i++) {
   const z = r * Math.cos(theta);
   positions.set([x, y, z], i * 3);
   basePositions.set([x, y, z], i * 3);
-  velocities.set([0,0,0], i * 3);   // вместо случайной скорости — сразу 0
+  velocities.set([0, 0, 0], i * 3); // скорость сразу 0, частицы не “разбегаются”
 }
 
 const partGeo = new THREE.BufferGeometry();
